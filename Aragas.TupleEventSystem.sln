@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29403.142
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aragas.TupleEventSystem", "src\Aragas.TupleEventSystem\Aragas.TupleEventSystem.csproj", "{49961320-F1BE-445F-B33A-504F1F8A1E43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49961320-F1BE-445F-B33A-504F1F8A1E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49961320-F1BE-445F-B33A-504F1F8A1E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49961320-F1BE-445F-B33A-504F1F8A1E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49961320-F1BE-445F-B33A-504F1F8A1E43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2870174B-BC11-43C1-BE7B-7BEFCFA62AF4}
+	EndGlobalSection
+EndGlobal

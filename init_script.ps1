@@ -1,6 +1,6 @@
 if($isWindows)
 {
-	$env:NAME="Solution"
+	$env:NAME="Aragas.TupleEventSystem"
 	
 	$env:NUGET_NAME="$env:NAME"
 	$env:NUGET_TOKEN=""
@@ -16,9 +16,9 @@ if($isWindows)
 		Update-AppveyorBuild -Version "$($env:APPVEYOR_REPO_TAG_NAME)"
 	}
 }
-if($isLinux)
-{
-	$env:NAME="Solution.Linux"
-}
+#if($isLinux)
+#{
+#	$env:NAME="Solution.Linux"
+#}
 
 $env:SOLUTION_NAME="$env:NAME.sln"
