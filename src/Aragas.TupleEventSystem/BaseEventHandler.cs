@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Aragas.TupleEventSystem
 {
@@ -17,8 +18,10 @@ namespace Aragas.TupleEventSystem
         public static BaseEventHandler<TEventArgs> operator +(BaseEventHandler<TEventArgs> eventHandler, EventHandler<TEventArgs> @delegate) => eventHandler.Subscribe(@delegate);
         public static BaseEventHandler<TEventArgs> operator -(BaseEventHandler<TEventArgs> eventHandler, EventHandler<TEventArgs> @delegate) => eventHandler.Unsubscribe(@delegate);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple) => Subscribe(tuple.Object, tuple.Delegate);
         public abstract BaseEventHandler<TEventArgs> Subscribe(object @object, EventHandler<TEventArgs> @delegate);
-        public abstract BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple);
+        //public abstract BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple);
         public abstract BaseEventHandler<TEventArgs> Subscribe(EventHandler<TEventArgs> @delegate);
         public abstract BaseEventHandler<TEventArgs> Unsubscribe(EventHandler<TEventArgs> @delegate);
 
