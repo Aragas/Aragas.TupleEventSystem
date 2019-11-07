@@ -69,7 +69,7 @@ namespace Aragas.TupleEventSystem
             return this;
         }
 
-        protected override void Invoke(object sender, TEventArgs e)
+        public override void Invoke(object sender, TEventArgs e)
         {
             SubscribersLock.WaitOne();
             SubscribersLock.Reset();

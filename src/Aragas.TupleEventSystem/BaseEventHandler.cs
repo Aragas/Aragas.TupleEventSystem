@@ -11,8 +11,8 @@ namespace Aragas.TupleEventSystem
         private bool IsDisposed { get; set; }
 
         // TODO: Find some way to make the class invokable
-        public static explicit operator Action<object, TEventArgs>(BaseEventHandler<TEventArgs> handler) => handler.Invoke;
-        protected abstract void Invoke(object sender, TEventArgs eventArgs);
+        //public static explicit operator Action<object, TEventArgs>(BaseEventHandler<TEventArgs> handler) => handler.Invoke;
+        public abstract void Invoke(object sender, TEventArgs eventArgs);
 
         public static BaseEventHandler<TEventArgs> operator +(BaseEventHandler<TEventArgs> eventHandler, (object, EventHandler<TEventArgs>) tuple) => eventHandler.Subscribe(tuple);
         public static BaseEventHandler<TEventArgs> operator +(BaseEventHandler<TEventArgs> eventHandler, EventHandler<TEventArgs> @delegate) => eventHandler.Subscribe(@delegate);

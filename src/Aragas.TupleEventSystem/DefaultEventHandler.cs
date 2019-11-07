@@ -17,7 +17,7 @@ namespace Aragas.TupleEventSystem
         public override BaseEventHandler<TEventArgs> Subscribe(EventHandler<TEventArgs> @delegate) { EventHandler += @delegate; return this; }
         public override BaseEventHandler<TEventArgs> Unsubscribe(EventHandler<TEventArgs> @delegate) { EventHandler -= @delegate; return this; }
 
-        protected override void Invoke(object sender, TEventArgs e) { EventHandler?.Invoke(sender, e); }
+        public override void Invoke(object sender, TEventArgs e) { EventHandler?.Invoke(sender, e); }
 
         protected override void Dispose(bool disposing)
         {
