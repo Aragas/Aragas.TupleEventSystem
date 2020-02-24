@@ -8,7 +8,7 @@ namespace Aragas.TupleEventSystem
     /// </summary>
     public sealed class DefaultEventHandler<TEventArgs> : BaseEventHandler<TEventArgs> where TEventArgs : EventArgs
     {
-        private event EventHandler<TEventArgs> EventHandler;
+        private event EventHandler<TEventArgs>? EventHandler;
 
         private bool IsDisposed { get; set; }
 
@@ -17,7 +17,7 @@ namespace Aragas.TupleEventSystem
         public override BaseEventHandler<TEventArgs> Subscribe(EventHandler<TEventArgs> @delegate) { EventHandler += @delegate; return this; }
         public override BaseEventHandler<TEventArgs> Unsubscribe(EventHandler<TEventArgs> @delegate) { EventHandler -= @delegate; return this; }
 
-        public override void Invoke(object sender, TEventArgs e) { EventHandler?.Invoke(sender, e); }
+        public override void Invoke(object sender, TEventArgs eventArgs) { EventHandler?.Invoke(sender, eventArgs); }
 
         protected override void Dispose(bool disposing)
         {

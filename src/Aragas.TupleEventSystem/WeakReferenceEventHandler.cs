@@ -10,22 +10,18 @@ namespace Aragas.TupleEventSystem
     {
         private readonly struct DelegateWithWeakReference
         {
-            public Type ObjectType { get; }
-            private WeakReference<object> ObjectWeakReference { get; }
-            public object Object => ObjectWeakReference.TryGetTarget(out var @object) ? @object : null;
+            public (Type Type, WeakReference<object> Value)? ObjectStorage { get; }
 
             public EventHandler<TEventArgs> Delegate { get; }
 
             public DelegateWithWeakReference(object @object, EventHandler<TEventArgs> @delegate)
             {
-                ObjectType = @object.GetType();
-                ObjectWeakReference = new WeakReference<object>(@object);
+                ObjectStorage = (@object.GetType(), new WeakReference<object>(@object));
                 Delegate = @delegate;
             }
             internal DelegateWithWeakReference(EventHandler<TEventArgs> @delegate)
             {
-                ObjectType = null;
-                ObjectWeakReference = null;
+                ObjectStorage = null;
                 Delegate = @delegate;
             }
 
@@ -37,7 +33,7 @@ namespace Aragas.TupleEventSystem
             public override bool Equals(object obj) => obj is DelegateWithWeakReference origin && Equals(origin);
             public bool Equals(DelegateWithWeakReference other) => other.Delegate.Equals(Delegate);
 
-            public override int GetHashCode() => HashCode.Combine(Object.GetHashCode(), Delegate.GetHashCode());
+            public override int GetHashCode() => HashCode.Combine(ObjectStorage?.Value.GetHashCode(), Delegate.GetHashCode());
         }
         private List<DelegateWithWeakReference> Subscribers { get; } = new List<DelegateWithWeakReference>();
         private ManualResetEvent SubscribersLock { get; } = new ManualResetEvent(true);
@@ -53,7 +49,7 @@ namespace Aragas.TupleEventSystem
         /*
         public override BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple)
         {
-            SubscribersLock.Wait();
+            SubscribersLock.WaitOne();
             Subscribers.Add(new DelegateWithWeakReference(tuple.Object, tuple.Delegate));
             return this;
         }
@@ -71,12 +67,12 @@ namespace Aragas.TupleEventSystem
             return this;
         }
 
-        public override void Invoke(object sender, TEventArgs e)
+        public override void Invoke(object sender, TEventArgs eventArgs)
         {
             SubscribersLock.WaitOne();
             SubscribersLock.Reset();
             foreach (var subscriber in Subscribers)
-                subscriber.Delegate?.Invoke(sender, e);
+                subscriber.Delegate?.Invoke(sender, eventArgs);
             SubscribersLock.Set();
         }
 
@@ -92,13 +88,24 @@ namespace Aragas.TupleEventSystem
                     {
                         Debug.WriteLine("Leaking events!");
                         foreach (var subscriber in Subscribers)
-                            Debug.WriteLine(subscriber.Object != null ? $"Object {subscriber.ObjectType} forgot to unsubscribe" : $"Object of type {subscriber.ObjectType} was disposed but forgot to unsubscribe!");
+                        {
+                            if (subscriber.ObjectStorage == null)
+                                Debug.WriteLine("A leaking event was subscribed to without passing the object with the delegate!");
+                            else
+                            {
+                                if(subscriber.ObjectStorage.Value.Value.TryGetTarget(out var @object))
+                                    Debug.WriteLine($"Object {@object} forgot to unsubscribe");
+                                else
+                                    Debug.WriteLine($"Object of type {subscriber.ObjectStorage.Value.Type} was disposed but forgot to unsubscribe!");
+                            }
+                        }
 #if DEBUG
                         Debugger.Break();
 #endif
                         Subscribers.Clear();
                     }
                     SubscribersLock.Set();
+                    SubscribersLock.Dispose();
                 }
 
                 IsDisposed = true;

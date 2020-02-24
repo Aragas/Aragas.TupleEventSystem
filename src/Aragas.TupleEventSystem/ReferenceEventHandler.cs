@@ -10,20 +10,17 @@ namespace Aragas.TupleEventSystem
     {
         private readonly struct DelegateWithReference
         {
-            public Type ObjectType { get; }
-            public object Object { get; }
+            public (Type Type, object Value)? ObjectStorage { get; }
             public EventHandler<TEventArgs> Delegate { get; }
 
             public DelegateWithReference(object @object, EventHandler<TEventArgs> @delegate)
             {
-                ObjectType = @object.GetType();
-                Object = @object;
+                ObjectStorage = (@object.GetType(), @object);
                 Delegate = @delegate;
             }
             internal DelegateWithReference(EventHandler<TEventArgs> @delegate)
             {
-                ObjectType = null;
-                Object = null;
+                ObjectStorage = null;
                 Delegate = @delegate;
             }
 
@@ -35,7 +32,7 @@ namespace Aragas.TupleEventSystem
             public override bool Equals(object obj) => obj is DelegateWithReference origin && Equals(origin);
             public bool Equals(DelegateWithReference other) => other.Delegate.Equals(Delegate);
 
-            public override int GetHashCode() => HashCode.Combine(Object.GetHashCode(), Delegate.GetHashCode());
+            public override int GetHashCode() => HashCode.Combine(ObjectStorage?.GetHashCode(), Delegate.GetHashCode());
         }
         private List<DelegateWithReference> Subscribers { get; } = new List<DelegateWithReference>();
         private ManualResetEvent SubscribersLock { get; } = new ManualResetEvent(true);
@@ -69,12 +66,12 @@ namespace Aragas.TupleEventSystem
             return this;
         }
 
-        public override void Invoke(object sender, TEventArgs e)
+        public override void Invoke(object sender, TEventArgs eventArgs)
         {
             SubscribersLock.WaitOne();
             SubscribersLock.Reset();
             foreach (var subscriber in Subscribers)
-                subscriber.Delegate?.Invoke(sender, e);
+                subscriber.Delegate?.Invoke(sender, eventArgs);
             SubscribersLock.Set();
         }
 
@@ -90,13 +87,24 @@ namespace Aragas.TupleEventSystem
                     {
                         Debug.WriteLine("Leaking events!");
                         foreach (var subscriber in Subscribers)
-                            Debug.WriteLine(subscriber.Object != null ? $"Object {subscriber.ObjectType} forgot to unsubscribe" : $"Object of type {subscriber.ObjectType} was disposed but forgot to unsubscribe!");
+                        {
+                            if (subscriber.ObjectStorage == null)
+                                Debug.WriteLine("A leaking event was subscribed to without passing the object with the delegate!");
+                            else
+                            {
+                                if (subscriber.ObjectStorage.Value.Value is object @object)
+                                    Debug.WriteLine($"Object {@object} forgot to unsubscribe");
+                                else
+                                    Debug.WriteLine($"Object of type {subscriber.ObjectStorage.Value.Type} was disposed but forgot to unsubscribe!");
+                            }
+                        }
 #if DEBUG
                         Debugger.Break();
 #endif
                         Subscribers.Clear();
                     }
                     SubscribersLock.Set();
+                    SubscribersLock.Dispose();
                 }
 
                 IsDisposed = true;

@@ -14,14 +14,22 @@ namespace Aragas.TupleEventSystem
         //public static explicit operator Action<object, TEventArgs>(BaseEventHandler<TEventArgs> handler) => handler.Invoke;
         public abstract void Invoke(object sender, TEventArgs eventArgs);
 
+        //public static BaseEventHandler<TEventArgs> operator +(BaseEventHandler<TEventArgs> eventHandler, BaseEventHandler<TEventArgs> @delegate) => eventHandler.Subscribe(@delegate);
+        //public static BaseEventHandler<TEventArgs> operator -(BaseEventHandler<TEventArgs> eventHandler, BaseEventHandler<TEventArgs> @delegate) => eventHandler.Unsubscribe(@delegate);
+
         public static BaseEventHandler<TEventArgs> operator +(BaseEventHandler<TEventArgs> eventHandler, (object, EventHandler<TEventArgs>) tuple) => eventHandler.Subscribe(tuple);
         public static BaseEventHandler<TEventArgs> operator +(BaseEventHandler<TEventArgs> eventHandler, EventHandler<TEventArgs> @delegate) => eventHandler.Subscribe(@delegate);
         public static BaseEventHandler<TEventArgs> operator -(BaseEventHandler<TEventArgs> eventHandler, EventHandler<TEventArgs> @delegate) => eventHandler.Unsubscribe(@delegate);
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public BaseEventHandler<TEventArgs> Subscribe((object Object, BaseEventHandler<TEventArgs> Delegate) tuple) => Subscribe(tuple.Object, tuple.Delegate);
+        //public abstract BaseEventHandler<TEventArgs> Subscribe(object @object, BaseEventHandler<TEventArgs> @delegate);
+        //public abstract BaseEventHandler<TEventArgs> Subscribe(BaseEventHandler<TEventArgs> @delegate);
+        //public abstract BaseEventHandler<TEventArgs> Unsubscribe(BaseEventHandler<TEventArgs> @delegate);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple) => Subscribe(tuple.Object, tuple.Delegate);
         public abstract BaseEventHandler<TEventArgs> Subscribe(object @object, EventHandler<TEventArgs> @delegate);
-        //public abstract BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple);
         public abstract BaseEventHandler<TEventArgs> Subscribe(EventHandler<TEventArgs> @delegate);
         public abstract BaseEventHandler<TEventArgs> Unsubscribe(EventHandler<TEventArgs> @delegate);
 
