@@ -9,6 +9,9 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <NoWarn>RCS1057;RCS1036</NoWarn>
     <Nullable>enable</Nullable>
+    <RepositoryUrl>https://github.com/Aragas/Aragas.TupleEventSystem</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/Aragas/Aragas.TupleEventSystem</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
