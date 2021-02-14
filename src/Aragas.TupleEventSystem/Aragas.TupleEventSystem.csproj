@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
     <RootNamespace>Aragas.TupleEventSystem</RootNamespace>
     <AssemblyName>Aragas.TupleEventSystem</AssemblyName>
-    <LangVersion>8.0</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <NoWarn>RCS1057;RCS1036</NoWarn>
