@@ -12,11 +12,11 @@ namespace Aragas.TupleEventSystem
         {
             public (Type Type, WeakReference<object> Value)? ObjectStorage { get; }
 
-            public EventHandler<TEventArgs> Delegate { get; }
+            public EventHandler<TEventArgs>? Delegate { get; }
 
-            public DelegateWithWeakReference(object @object, EventHandler<TEventArgs> @delegate)
+            public DelegateWithWeakReference(object? @object, EventHandler<TEventArgs> @delegate)
             {
-                ObjectStorage = (@object.GetType(), new WeakReference<object>(@object));
+                ObjectStorage = @object is not null ? (@object.GetType(), new WeakReference<object>(@object)) : null;
                 Delegate = @delegate;
             }
             internal DelegateWithWeakReference(EventHandler<TEventArgs> @delegate)
@@ -31,23 +31,23 @@ namespace Aragas.TupleEventSystem
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public override bool Equals(object obj) => obj is DelegateWithWeakReference origin && Equals(origin);
-            public bool Equals(DelegateWithWeakReference other) => other.Delegate.Equals(Delegate);
+            public bool Equals(DelegateWithWeakReference other) => other.Delegate?.Equals(Delegate) == true;
 
-            public override int GetHashCode() => HashCode.Combine(ObjectStorage?.Value.GetHashCode(), Delegate.GetHashCode());
+            public override int GetHashCode() => HashCode.Combine(ObjectStorage?.Value.GetHashCode(), Delegate?.GetHashCode());
         }
-        private List<DelegateWithWeakReference> Subscribers { get; } = new List<DelegateWithWeakReference>();
-        private ManualResetEvent SubscribersLock { get; } = new ManualResetEvent(true);
+        private List<DelegateWithWeakReference> Subscribers { get; } = new();
+        private ManualResetEvent SubscribersLock { get; } = new(true);
 
         private bool IsDisposed { get; set; }
 
-        public override BaseEventHandler<TEventArgs> Subscribe(object @object, EventHandler<TEventArgs> @delegate)
+        public override BaseEventHandler<TEventArgs> Subscribe(object? @object, EventHandler<TEventArgs> @delegate)
         {
             SubscribersLock.WaitOne();
             Subscribers.Add(new DelegateWithWeakReference(@object, @delegate));
             return this;
         }
         /*
-        public override BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple)
+        public override BaseEventHandler<TEventArgs> Subscribe((object? Object, EventHandler<TEventArgs> Delegate) tuple)
         {
             SubscribersLock.WaitOne();
             Subscribers.Add(new DelegateWithWeakReference(tuple.Object, tuple.Delegate));
@@ -67,7 +67,7 @@ namespace Aragas.TupleEventSystem
             return this;
         }
 
-        public override void Invoke(object sender, TEventArgs eventArgs)
+        public override void Invoke(object? sender, TEventArgs eventArgs)
         {
             SubscribersLock.WaitOne();
             SubscribersLock.Reset();

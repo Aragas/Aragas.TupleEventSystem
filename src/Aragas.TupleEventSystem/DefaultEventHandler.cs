@@ -12,12 +12,12 @@ namespace Aragas.TupleEventSystem
 
         private bool IsDisposed { get; set; }
 
-        public override BaseEventHandler<TEventArgs> Subscribe(object @object, EventHandler<TEventArgs> @delegate) { EventHandler += @delegate; return this; }
-        //public override BaseEventHandler<TEventArgs> Subscribe((object Object, EventHandler<TEventArgs> Delegate) tuple) { EventHandler += tuple.Delegate; return this; }
+        public override BaseEventHandler<TEventArgs> Subscribe(object? @object, EventHandler<TEventArgs> @delegate) { EventHandler += @delegate; return this; }
+        //public override BaseEventHandler<TEventArgs> Subscribe((object? Object, EventHandler<TEventArgs> Delegate) tuple) { EventHandler += tuple.Delegate; return this; }
         public override BaseEventHandler<TEventArgs> Subscribe(EventHandler<TEventArgs> @delegate) { EventHandler += @delegate; return this; }
         public override BaseEventHandler<TEventArgs> Unsubscribe(EventHandler<TEventArgs> @delegate) { EventHandler -= @delegate; return this; }
 
-        public override void Invoke(object sender, TEventArgs eventArgs) { EventHandler?.Invoke(sender, eventArgs); }
+        public override void Invoke(object? sender, TEventArgs eventArgs) { EventHandler?.Invoke(sender, eventArgs); }
 
         protected override void Dispose(bool disposing)
         {
